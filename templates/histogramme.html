@@ -10,11 +10,11 @@
           .then(response => response.json())
           .then(data => {
             var dataTable = new google.visualization.DataTable();
-            dataTable.addColumn('string', 'Date');
+            dataTable.addColumn('string', 'Year');
             dataTable.addColumn('number', 'Valeur');
             data.results.forEach(entry => {
-              var date = new Date(entry.year * 10);
-              dataTable.addRow([date.toLocaleDateString(), entry.temp]);
+              var year = entry.year;
+              dataTable.addRow([year.toString(), entry.temp]);
             });
 
             var options = {
