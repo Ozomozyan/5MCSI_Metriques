@@ -13,7 +13,7 @@
             dataTable.addColumn('string', 'Date');
             dataTable.addColumn('number', 'Valeur');
             data.results.forEach(entry => {
-              var date = new Date(entry.year * 1000);
+              var date = new Date(entry.year * 10);
               dataTable.addRow([date.toLocaleDateString(), entry.temp]);
             });
 
