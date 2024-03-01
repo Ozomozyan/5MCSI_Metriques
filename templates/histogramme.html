@@ -1,34 +1,36 @@
-<script type="text/javascript">
-  google.charts.load('current', {'packages':['bar']});
-  google.charts.setOnLoadCallback(drawChart);
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawChart);
 
-  function drawChart() {
-    fetch('/tawarano/')
-      .then(response => response.json())
-      .then(data => {
-        var dataTable = new google.visualization.DataTable();
-        dataTable.addColumn('string', 'Date');
-        dataTable.addColumn('number', 'Valeur');
+      function drawChart() {
+        fetch('/tawarano/')
+          .then(response => response.json())
+          .then(data => {
+            var dataTable = new google.visualization.DataTable();
+            dataTable.addColumn('string', 'Date');
+            dataTable.addColumn('number', 'Valeur');
+            data.results.forEach(entry => {
+              var date = new Date(entry.year * 1000);
+              dataTable.addRow([date.toLocaleDateString(), entry.temp]);
+            });
 
-        data.results.forEach(entry => {
-          var date = new Date(entry.Jour * 1000);
-          var year = date.getFullYear();
+            var options = {
+              chart: {
+                title: 'Évolution des températures de la ville de Tawarano',
+                subtitle: 'Data from 2014 to 2017',
+              }
+            };
 
-          // Only include data from 2014 to 2017
-          if (year >= 2014 && year <= 2017) {
-            dataTable.addRow([date.toLocaleDateString(), entry.temp]);
-          }
-        });
-
-        var options = {
-          chart: {
-            title: 'Évolution des températures de la ville de Tawarano',
-            subtitle: 'Data from 2014 to 2017',
-          }
-        };
-
-        var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
-        chart.draw(dataTable, google.charts.Bar.convertOptions(options));
-      });
-  }
-</script>
+            var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+            chart.draw(dataTable, google.charts.Bar.convertOptions(options));
+          });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="columnchart_material" style="width: 800px; height: 500px;"></div>
+  </body>
+</html>
