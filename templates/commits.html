@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Commits</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  </head>
+  <body>
+    <div id="chart_div"></div>
+    <script>
+      google.charts.load('current', { packages: ['corechart'] });
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        fetch('https://api.github.com/repos/OpenRSI/5MCSI_Metriques/commits')
+          .then(response => response.json())
+          .then(data => {
+            var dataTable = new google.visualization.DataTable();
+            dataTable.addColumn('string', 'Date');
+            dataTable.addColumn('number', 'Commits');
+
+            var commitCounts = {};
+
+            data.forEach(entry => {
+              var date = new Date(entry.commit.author.date);
+              var minute = date.getMinutes();
+              if (!commitCounts[minute]) {
+                commitCounts[minute] = 0;
+              }
+              commitCounts[minute]++;
+            });
+
+            for (var minute in commitCounts) {
+              dataTable.addRow([minute, commitCounts[minute]]);
+            }
+
+            var options = {
+              title: 'Commits per minute',
+              curveType: 'function',
+              legend: { position: 'bottom' }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+            chart.draw(dataTable, options);
+          });
+      }
+    </script>
+  </body>
+</html>
